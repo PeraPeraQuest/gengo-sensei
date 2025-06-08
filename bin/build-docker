@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# build-docker
+
+# create a unique(-ish) build tag for this build
+BUILD_TAG="$(date +%Y%m%d%H%M%S)"
+
+# build gengo-sensei, and tag it as gengo-sensei:BUILD_TAG
+docker buildx build $@ \
+    --file Dockerfile \
+    --tag gengo-sensei:${BUILD_TAG} \
+    .
+
+# since we just built gengo-sensei, tag it again as gengo-sensei:latest
+docker image tag gengo-sensei:${BUILD_TAG} gengo-sensei:latest

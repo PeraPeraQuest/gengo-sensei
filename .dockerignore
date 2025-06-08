@@ -1,0 +1,12 @@
+# .dockerignore
+# Tell Docker to ignore these files when building container images
+
+.git
+.github
+assets
+bin
+target
+tools
+.dockerignore
+.gitignore
+Dockerfile

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# stop-gengo-sensei
+
+kill -9 "$(< gengo-sensei.pid)"

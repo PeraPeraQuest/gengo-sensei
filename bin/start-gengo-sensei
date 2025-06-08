@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# start-gengo-sensei
+
+export BIND_ADDRESS_AND_PORT="0.0.0.0:3001"
+export RUST_LOG="debug"
+
+TIMESTAMP=$(date +%s)
+
+cargo build --release
+cargo run --release 1>gengo-sensei-${TIMESTAMP}.log.1 2>gengo-sensei-${TIMESTAMP}.log.2 &
+echo $! >gengo-sensei.pid

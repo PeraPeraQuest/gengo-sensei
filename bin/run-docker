@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# run-docker
+
+# run the gengo-sensei service in a container
+docker run \
+    --env=BIND_ADDRESS_AND_PORT="0.0.0.0:3001" \
+    --env=RUST_LOG="debug" \
+    --name=gengo-sensei \
+    --publish 3001:3001 \
+    --rm \
+    gengo-sensei:latest
