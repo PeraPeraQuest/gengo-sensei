@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# run-docker-mongoshell
+
+set -euo pipefail
+
+# name of the MongoDB container (default: gengo-sensei-mongo-ram)
+CONTAINER_NAME="${MONGO_CONTAINER_NAME:-gengo-sensei-mongo-ram}"
+
+# database name as the first argument (default: gengo)
+DB_NAME="${1:-gengo}"
+
+# if the container isn't running
+if ! docker ps --filter "name=^${CONTAINER_NAME}$" --format '{{.Names}}' \
+     | grep -q "^${CONTAINER_NAME}$"; then
+     # tell the user that and bail out
+    echo "Error: container '${CONTAINER_NAME}' is not running." >&2
+    exit 1
+fi
+
+# exec into the container with mongosh
+docker exec -it "${CONTAINER_NAME}" \
+    mongosh "mongodb://127.0.0.1:27017/${DB_NAME}"

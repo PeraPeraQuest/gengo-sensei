@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# consent
+
+curl -v \
+    -X POST http://localhost:3001/v1/@me/consent \
+    -H "Content-Type: application/json" \
+    -d '{
+            "data_science": true,
+            "sharing_scope": "anonymized"
+        }'
