@@ -14,32 +14,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-use axum::{Json, Router, extract::State, http::StatusCode, response::IntoResponse, routing::post};
-use serde::{Deserialize, Serialize};
-use tracing::info;
+pub mod me;
+
+use axum::Router;
 
 use crate::AppState;
 
 pub fn build() -> Router<AppState> {
-    Router::new().route("/@me/consent", post(update_consent))
-    // .route("/v1/@me/progress", post(submit_progress))
-}
-
-// TODO: Refactor below into a submodule of v1
-
-#[derive(Clone, Deserialize, Serialize)]
-pub struct ConsentUpdate {
-    pub data_science: bool,
-}
-
-async fn update_consent(
-    State(_app): State<AppState>,
-    Json(_body): Json<ConsentUpdate>,
-) -> impl IntoResponse {
-    info!("Updating consent for user XYZ");
-    // use `app.sql` for MariaDB…
-    // use `app.mongo` for MongoDB…
-    // e.g. app.sql.execute("…").await;
-    //      app.mongo.database("perapera").collection("logs").insert_one(doc!{…}, None).await;
-    StatusCode::NO_CONTENT
+    Router::new().nest("/@me", me::build())
 }

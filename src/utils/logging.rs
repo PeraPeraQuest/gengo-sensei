@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+use std::io::IsTerminal;
+
 use tracing_subscriber::{
     EnvFilter, fmt, fmt::format::FmtSpan, prelude::__tracing_subscriber_SubscriberExt,
     registry::Registry,
@@ -30,6 +32,7 @@ pub fn setup_logging() {
     let fmt_layer = fmt::layer()
         // produce JSON‐formatted logs
         // .json()
+        .with_ansi(std::io::stdout().is_terminal())
         .with_target(false)
         .with_thread_ids(false)
         .with_thread_names(false)

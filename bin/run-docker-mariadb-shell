@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# run-docker-mariadb-shell
+
+set -euo pipefail
+
+# name of the MariaDB container (default: gengo-sensei-mariadb-ram)
+CONTAINER_NAME="${MARIA_CONTAINER_NAME:-gengo-sensei-mariadb-ram}"
+
+# database name as the first argument (default: gengo)
+DB_NAME="${1:-gengo}"
+
+# if the container isn't running
+if ! docker ps --filter "name=^${CONTAINER_NAME}$" --format '{{.Names}}' \
+     | grep -q "^${CONTAINER_NAME}$"; then
+     # tell the user that and bail out
+    echo "Error: container '${CONTAINER_NAME}' is not running." >&2
+    exit 1
+fi
+
+# exec into the container with mongosh
+docker exec -it "${CONTAINER_NAME}" \
+    mariadb \
+    --host 127.0.0.1 \
+    --user root \
+    --password \
+    ${DB_NAME}

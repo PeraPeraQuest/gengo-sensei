@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# run-docker-mongoshell
+# run-docker-mongodb-shell
 
 set -euo pipefail
 
-# name of the MongoDB container (default: gengo-sensei-mongo-ram)
-CONTAINER_NAME="${MONGO_CONTAINER_NAME:-gengo-sensei-mongo-ram}"
+# name of the MongoDB container (default: gengo-sensei-mongodb-ram)
+CONTAINER_NAME="${MONGO_CONTAINER_NAME:-gengo-sensei-mongodb-ram}"
 
 # database name as the first argument (default: gengo)
 DB_NAME="${1:-gengo}"

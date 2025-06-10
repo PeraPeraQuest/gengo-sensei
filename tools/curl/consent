@@ -6,5 +6,5 @@ curl -v \
     -H "Content-Type: application/json" \
     -d '{
             "data_science": true,
-            "sharing_scope": "anonymized"
+            "ppq_test": true
         }'
