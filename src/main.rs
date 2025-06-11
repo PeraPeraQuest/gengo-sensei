@@ -26,13 +26,12 @@ use sqlx::MySqlPool;
 use tower_http::trace::TraceLayer;
 use tracing::info;
 
-use crate::route::v1;
 use crate::utils::logging::setup_logging;
 
 #[derive(Clone)]
 pub struct AppState {
+    pub maria: MySqlPool,
     pub mongo: Arc<MongoClient>,
-    pub sql: MySqlPool,
 }
 
 #[tokio::main]
@@ -41,24 +40,14 @@ async fn main() -> anyhow::Result<()> {
     setup_logging();
     info!("Gengo-sensei starting up...");
 
-    // — MariaDB pool
-    let maria_url = std::env::var("DATABASE_URL")?;
-    info!("Connecting to MariaDB: {}", maria_url);
-    let sql = MySqlPool::connect(&maria_url).await?;
-
-    // — MongoDB client
-    let mongo_url = std::env::var("MONGODB_URI")?;
-    info!("Connecting to MongoDB: {}", mongo_url);
-    let mut opts = mongodb::options::ClientOptions::parse(&mongo_url).await?;
-    opts.app_name = Some("gengo-sensei".to_string());
-    let mongo = Arc::new(MongoClient::with_options(opts)?);
-
-    // Bundle into shared state
-    let state = AppState { mongo, sql };
+    // create application state
+    let maria = db::mariadb::get_db().await?;
+    let mongo = Arc::new(db::mongodb::get_db().await?);
+    let state = AppState { maria, mongo };
 
     // Build routes and attach state
     let app = Router::new()
-        .nest("/v1", v1::build())
+        .nest("/v1", route::v1::build())
         .layer(TraceLayer::new_for_http())
         .with_state(state);
 

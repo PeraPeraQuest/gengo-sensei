@@ -8,6 +8,7 @@ export RUST_LOG="debug"
 
 TIMESTAMP=$(date +%s)
 
+kill -9 "$(< gengo-sensei.pid)"
 cargo build
 cargo run 1>gengo-sensei-${TIMESTAMP}.log.1 2>gengo-sensei-${TIMESTAMP}.log.2 &
 echo $! >gengo-sensei.pid

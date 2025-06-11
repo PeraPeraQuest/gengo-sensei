@@ -13,3 +13,28 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+use std::time::Duration;
+
+use sqlx::MySqlPool;
+use tokio::time::timeout;
+use tracing::info;
+
+/// acquire a connection pool to a MariaDB database
+pub async fn get_db() -> anyhow::Result<MySqlPool> {
+    // source connection information from the environment
+    let maria_url = std::env::var("DATABASE_URL")?;
+    info!("Connecting to MariaDB: {}", maria_url);
+
+    // within 1 second
+    let pool = timeout(Duration::from_secs(1), async {
+        // create a MySqlPool connection to the MariaDB database
+        MySqlPool::connect(&maria_url).await
+    })
+    .await
+    .expect("Timed out waiting for connection to MariaDB")
+    .expect("Error while creating MySqlPool");
+
+    // return the pool to the caller
+    Ok(pool)
+}
