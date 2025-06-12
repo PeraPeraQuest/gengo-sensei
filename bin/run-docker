@@ -4,8 +4,12 @@
 # run the gengo-sensei service in a container
 docker run \
     --env=BIND_ADDRESS_AND_PORT="0.0.0.0:3001" \
+    --env=MARIADB_URL="mysql://root:hunter2@mariadb:3306/" \
+    --env=MONGODB_URL="mongodb://mongodb:27017/?authSource=admin" \
     --env=RUST_LOG="debug" \
-    --name=gengo-sensei \
+    --link gengo-sensei-mariadb-ram:mariadb \
+    --link gengo-sensei-mongodb-ram:mongodb \
+    --name gengo-sensei \
     --publish 3001:3001 \
     --rm \
     gengo-sensei:latest

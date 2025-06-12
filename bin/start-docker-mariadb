@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# start-docker-mariadb
+
+source dependencies.sh
+
+# run an in-memory MariaDB container for testing
+docker run \
+    --detach \
+    --env=MYSQL_ROOT_PASSWORD=hunter2 \
+    --name gengo-sensei-mariadb-ram \
+    --publish 3306:3306 \
+    --rm \
+    --tmpfs /var/lib/mysql:rw,size=256m \
+    mariadb:${MARIADB_VERSION}

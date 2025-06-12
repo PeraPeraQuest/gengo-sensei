@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# start-docker-mongodb
+
+source dependencies.sh
+
+# run an in-memory MongoDB container for testing
+docker run \
+    --detach \
+    --name gengo-sensei-mongodb-ram \
+    --publish 27017:27017 \
+    --rm \
+    --tmpfs /data/db:rw,size=256m \
+    mongo:${MONGODB_VERSION}
