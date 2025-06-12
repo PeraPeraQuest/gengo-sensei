@@ -3,6 +3,7 @@
 
 curl -v \
     -X POST http://localhost:3001/v1/@me/consent \
+    -H "Authorization: Bearer 40f19d75-2353-4806-b334-c8051abba7bc" \
     -H "Content-Type: application/json" \
     -d '{
             "data_science": true,

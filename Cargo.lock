@@ -127,6 +127,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "axum-auth"
+version = "0.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "93495037c01c639b198ecb926b58f7f1c0d61ae663edcd61b2dd679f2a0bffe6"
+dependencies = [
+ "axum-core",
+ "base64 0.22.1",
+ "http",
+]
+
+[[package]]
 name = "axum-core"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -705,9 +716,9 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "axum",
+ "axum-auth",
  "mongodb",
  "serde",
- "serde_json",
  "sqlx",
  "tokio",
  "tower-http",
@@ -1275,9 +1286,9 @@ dependencies = [
 
 [[package]]
 name = "memchr"
-version = "2.7.4"
+version = "2.7.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
+checksum = "32a282da65faaf38286cf3be983213fcf1d2e2a58700e808f83f4ea9a4804bc0"
 
 [[package]]
 name = "mime"
@@ -2868,9 +2879,9 @@ dependencies = [
 
 [[package]]
 name = "windows-link"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "76840935b766e1b0a05c0066835fb9ec80071d4c09a16f6bd5f7e655e3c14c38"
+checksum = "d3bfe459f85da17560875b8bf1423d6f113b7a87a5d942e7da0ac71be7c61f8b"
 
 [[package]]
 name = "windows-result"

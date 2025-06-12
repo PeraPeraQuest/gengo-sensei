@@ -20,16 +20,18 @@ use sqlx::MySqlPool;
 use tokio::time::timeout;
 use tracing::info;
 
+use crate::config::AppConfig;
+
 /// acquire a connection pool to a MariaDB database
-pub async fn get_db() -> anyhow::Result<MySqlPool> {
+pub async fn get_db(config: &AppConfig) -> anyhow::Result<MySqlPool> {
     // source connection information from the environment
-    let maria_url = std::env::var("DATABASE_URL")?;
-    info!("Connecting to MariaDB: {}", maria_url);
+    let mariadb_url = &config.mariadb_url;
+    info!("Connecting to MariaDB: {}", mariadb_url);
 
     // within 1 second
     let pool = timeout(Duration::from_secs(1), async {
         // create a MySqlPool connection to the MariaDB database
-        MySqlPool::connect(&maria_url).await
+        MySqlPool::connect(mariadb_url).await
     })
     .await
     .expect("Timed out waiting for connection to MariaDB")

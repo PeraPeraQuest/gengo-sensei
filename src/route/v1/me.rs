@@ -14,15 +14,34 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-use axum::{Json, Router, extract::State, http::StatusCode, response::IntoResponse, routing::post};
+use axum::{
+    Extension, Json, Router,
+    extract::State,
+    http::StatusCode,
+    middleware,
+    response::IntoResponse,
+    routing::{get, post},
+};
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
-use crate::AppState;
+use crate::db::mongodb::Account;
+use crate::middle::auth_middleware;
+use crate::state::AppState;
 
-pub fn build() -> Router<AppState> {
-    Router::new().route("/consent", post(update_consent))
-    // .route("/v1/@me/progress", post(submit_progress))
+pub fn build(state: &AppState) -> Router<AppState> {
+    Router::new()
+        .route("/account", get(get_account))
+        .route("/consent", post(update_consent))
+        // .route("/v1/@me/progress", post(submit_progress))
+        .layer(middleware::from_fn_with_state(
+            state.clone(),
+            auth_middleware,
+        ))
+}
+
+async fn get_account(Extension(user): Extension<Account>) -> impl IntoResponse {
+    Json(user)
 }
 
 #[derive(Clone, Deserialize, Serialize)]
@@ -43,6 +62,7 @@ pub struct Consent {
 
 async fn update_consent(
     State(_app): State<AppState>,
+    Extension(_user): Extension<Account>,
     Json(_body): Json<Consent>,
 ) -> impl IntoResponse {
     info!("Updating consent for user XYZ");

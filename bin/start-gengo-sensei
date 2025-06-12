@@ -2,8 +2,8 @@
 # start-gengo-sensei
 
 export BIND_ADDRESS_AND_PORT="0.0.0.0:3001"
-export DATABASE_URL="mysql://root:hunter2@127.0.0.1:3306/"
-export MONGODB_URI="mongodb://127.0.0.1:27017/?authSource=admin"
+export MARIADB_URL="mysql://root:hunter2@127.0.0.1:3306/"
+export MONGODB_URL="mongodb://127.0.0.1:27017/?authSource=admin"
 export RUST_LOG="debug"
 
 TIMESTAMP=$(date +%s)

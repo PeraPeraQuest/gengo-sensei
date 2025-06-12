@@ -14,25 +14,22 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+pub mod config;
 pub mod db;
+pub mod middle;
 pub mod route;
+pub mod state;
 pub mod utils;
 
 use std::sync::Arc;
 
 use axum::Router;
-use mongodb::Client as MongoClient;
-use sqlx::MySqlPool;
 use tower_http::trace::TraceLayer;
 use tracing::info;
 
+use crate::config::get_config;
+use crate::state::AppState;
 use crate::utils::logging::setup_logging;
-
-#[derive(Clone)]
-pub struct AppState {
-    pub maria: MySqlPool,
-    pub mongo: Arc<MongoClient>,
-}
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -40,14 +37,17 @@ async fn main() -> anyhow::Result<()> {
     setup_logging();
     info!("Gengo-sensei starting up...");
 
+    // read the application configuration
+    let config = get_config()?;
+
     // create application state
-    let maria = db::mariadb::get_db().await?;
-    let mongo = Arc::new(db::mongodb::get_db().await?);
+    let maria = db::mariadb::get_db(&config).await?;
+    let mongo = Arc::new(db::mongodb::get_db(&config).await?);
     let state = AppState { maria, mongo };
 
     // Build routes and attach state
     let app = Router::new()
-        .nest("/v1", route::v1::build())
+        .nest("/v1", route::v1::build(&state))
         .layer(TraceLayer::new_for_http())
         .with_state(state);
 

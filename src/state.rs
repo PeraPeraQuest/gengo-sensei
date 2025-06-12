@@ -1,4 +1,4 @@
-// utils.rs
+// state.rs
 // Copyright 2025 Patrick Meade
 //
 // This program is free software: you can redistribute it and/or modify
@@ -14,28 +14,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-pub mod logging;
+use std::sync::Arc;
 
-#[allow(dead_code)]
-fn add(a: i64, b: i64) -> i64 {
-    a + b
-}
+use mongodb::Client;
+use sqlx::MySqlPool;
 
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_always_succeed() {
-        assert!(true);
-    }
-
-    #[test]
-    fn test_check_add() {
-        assert_eq!(7, add(3, 4));
-    }
+#[derive(Clone)]
+pub struct AppState {
+    pub maria: MySqlPool,
+    pub mongo: Arc<Client>,
 }

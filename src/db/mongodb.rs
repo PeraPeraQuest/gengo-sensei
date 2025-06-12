@@ -16,18 +16,30 @@
 
 use std::time::Duration;
 
-use mongodb::{bson::Document, Client};
+use mongodb::{
+    Client, Collection,
+    bson::{Document, doc},
+};
+use serde::{Deserialize, Serialize};
 use tokio::time::timeout;
 use tracing::info;
 
+use crate::config::AppConfig;
+
+#[derive(Clone, Deserialize, Serialize)]
+pub struct Account {
+    pub uuid: String,
+    pub discord_id: Option<String>,
+}
+
 /// obtain a MongoDB Client to access a MongoDB database
-pub async fn get_db() -> anyhow::Result<Client> {
+pub async fn get_db(config: &AppConfig) -> anyhow::Result<Client> {
     // source connection information from the environment
-    let mongo_url = std::env::var("MONGODB_URI")?;
-    info!("Connecting to MongoDB: {}", mongo_url);
+    let mongodb_url = &config.mongodb_url;
+    info!("Connecting to MongoDB: {}", mongodb_url);
 
     // create the MongoDB client
-    let mut opts = mongodb::options::ClientOptions::parse(&mongo_url).await?;
+    let mut opts = mongodb::options::ClientOptions::parse(mongodb_url).await?;
     opts.app_name = Some("gengo-sensei".to_string());
     let mongo = Client::with_options(opts)?;
 
@@ -45,4 +57,11 @@ pub async fn get_db() -> anyhow::Result<Client> {
 
     // return the database client to the caller
     Ok(mongo)
+}
+
+pub async fn load_account(client: &Client, uuid: &str) -> anyhow::Result<Option<Account>> {
+    let db = client.database("perapera");
+    let coll: Collection<Account> = db.collection("accounts");
+    let account = coll.find_one(doc! { "uuid": uuid }).await?;
+    Ok(account)
 }

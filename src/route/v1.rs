@@ -20,6 +20,6 @@ use axum::Router;
 
 use crate::AppState;
 
-pub fn build() -> Router<AppState> {
-    Router::new().nest("/@me", me::build())
+pub fn build(state: &AppState) -> Router<AppState> {
+    Router::new().nest("/@me", me::build(state))
 }
